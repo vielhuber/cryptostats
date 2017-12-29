@@ -1,0 +1,24 @@
+/* usage: 
+div
+{
+  ...
+  @include clearfix;
+}
+*/
+@mixin clearfix
+{
+    &:after
+    {
+        clear:both;
+        display:table;
+        content:"";
+    }
+}
+@mixin perf
+{
+    transform: translateZ(0);
+}
+@mixin title
+{
+    font-weight:bold;
+}

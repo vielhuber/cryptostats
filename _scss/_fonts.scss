@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500|Quicksand:300,400,500');
+
+html,
+body,
+button,
+input,
+select,
+textarea
+{
+	font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+}
+
+@mixin font-heading
+{
+	font-family: 'Quicksand', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+}

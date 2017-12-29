@@ -1,0 +1,102 @@
+*, *:before, *:after
+{
+	box-sizing: border-box;
+}
+
+html, body
+{
+	width:100%;
+	height:100%;
+	background-color: #FFF;
+}
+
+html
+{
+	-webkit-text-size-adjust: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
+    text-size-adjust: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -ms-text-size-adjust: 100%;
+}
+
+body
+{
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea
+{
+	color:$color-grey;
+	font-weight: normal;
+	line-height: 1.4;
+}
+
+textarea
+{
+	overflow: auto;
+}
+
+input, textarea
+{
+    border-radius: 0;
+	border:0;
+}
+
+input:focus, textarea:focus, select:focus
+{
+	outline: none;
+}
+
+::-moz-focus-inner
+{
+	border:0;
+}
+
+input[type="submit"],
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+textarea,
+select
+{
+    appearance:none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+select::-ms-expand
+{
+    display:none;
+}
+
+a
+{
+    text-decoration:none;
+    color:inherit;
+    outline:none;
+}
+
+::selection
+{
+	background:$color-greenlight;
+	color:#ffffff;
+}
+::-moz-selection
+{
+	background:$color-greenlight;
+	color:#ffffff;
+}
+::-webkit-selection
+{
+	background:$color-greenlight;
+	color:#ffffff;
+}
