@@ -131,4 +131,54 @@ export default class Helpers
         });
     }
 
+    static parseJson(string)
+    {
+        try
+        {
+            return JSON.parse(string);
+        }
+        catch(error)
+        {
+            return string;
+        }
+    }
+
+    static get(url)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = () =>
+            { 
+                if(xhr.readyState != 4 || xhr.status != 200)
+                {
+                    reject([xhr.readyState, xhr.status, xhr.statusText]);
+                }
+                resolve(this.parseJson(xhr.responseText));
+            }
+            xhr.open( 'GET', url, true );            
+            xhr.send( null );
+        });
+    }
+
+    static post(url, data)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            let xhr = new XMLHttpRequest();
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = () =>
+            {
+                if(xhr.readyState != 4 || xhr.status != 200)
+                {
+                    reject(this.parseJson(xhr.statusText));
+                }
+                resolve(xhr.responseText);
+            }
+            xhr.open( 'POST', url, true );
+            xhr.send( JSON.stringify(data) );
+        });
+    }
+
 }
