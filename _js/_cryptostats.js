@@ -36,81 +36,58 @@ export default class Cryptostats
     }
 
     init()
+    {
+        this.load().then((result) =>
+        {
+            console.log('async method done');
+        });
+    }
+
+    async load()
     {        
-        /*
-        document.querySelector('.balance--overall').textContent = this.getBalance();
-        document.querySelector('.balance--eth').textContent = this.getBalanceEthereum();
-        document.querySelector('.balance--btc').textContent = this.getBalanceBitcoin();
-        document.querySelector('.balance--ltc').textContent = this.getBalanceLitecoin();
-        */
-
-
-    }
-
-    getBalances()
-    {
-        this.getNextBalance();
-    }
-
-    getNextBalance()
-    {
+        // loop through all coins
         for(const [coin, data] of Object.entries(this.wallet))
         {
-            let address = this.getNextUnfinishedAddress(data);
-
-            if( address === null )
+            // loop through all addresses
+            for(let address of data.addresses)
             {
-                continue;
+                let balance = await this.getBalance(coin, address).catch(error => console.log(error));
+                this.setBalance(coin, address, balance.final_balance);          
             }
-
-            this.getBalance(coin, address)
-                .then((result) => 
-                {
-                    if( this.wallet[coin].balances === undefined )
-                    {
-                        this.wallet[coin].balances = {};
-                    }
-                    this.wallet[coin].balances[address] = result.final_balance;
-                    // throttle
-                    setTimeout(() =>
-                    {
-                        this.getNextBalance();
-                    },1000);
-                })
-                .catch((error) =>
-                {
-                    console.log('error');
-                    console.log(error);
-                });
-
-            return;
+            // coin is finished: get market cap (don't await)
+            let marketcap = this.getMarketCap(coin).catch(error => console.log(error)).then((v) => 
+            {
+                console.log(v);
+                // TODO: take the values in the wallet, apply them to the market cap and print out a shiny diagram
+            });
         }
-
-        // all done
+        // all finished
         console.log(this.wallet);
     }
 
-    getNextUnfinishedAddress(data)
+    setBalance(coin, address, value)
     {
-        if( data.balances === undefined )
+        if( this.wallet[coin].balances === undefined )
         {
-            return data.addresses[0];
+            this.wallet[coin].balances = {};
         }
-        if( Object.keys(data.balances).length >= data.addresses.length )
-        {
-            return null;
-        }
-        return data.addresses[Object.keys(data.balances).length];
+        this.wallet[coin].balances[address] = value;
     }
 
     getBalance(coin, address)
     {
-        return Helpers.get('https://api.blockcypher.com/v1/'+coin+'/main/addrs/'+address+'/balance');
+        return Helpers.getWithPromise(
+            'https://api.blockcypher.com/v1/'+coin+'/main/addrs/'+address+'/balance',
+            1000
+        );
     }
 
     getMarketCap(coin, days = 60)
     {
-        return Helpers.get('https://min-api.cryptocompare.com/data/histoday?fsym='+coin.toUpperCase()+'&tsym=EUR&limit='+days);
+        return Helpers.getWithPromise(
+            'https://min-api.cryptocompare.com/data/histoday?fsym='+coin.toUpperCase()+'&tsym=EUR&limit='+days,
+            1000
+        );
     }
     
 }
