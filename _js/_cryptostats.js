@@ -51,18 +51,60 @@ export default class Cryptostats
             // loop through all addresses
             for(let address of data.addresses)
             {
-                let balance = await this.getBalance(coin, address).catch(error => console.log(error));
-                this.setBalance(coin, address, balance.final_balance);          
+                let balance = 0;
+                let api = await this.getBalance(coin, address).catch((error) => {});
+                if( api && api.final_balance )
+                {
+                    balance = api.final_balance;
+                }
+                this.setBalance(coin, address, balance);          
             }
-            // coin is finished: get market cap (don't await)
-            let marketcap = this.getMarketCap(coin).catch(error => console.log(error)).then((v) => 
+
+            // balances of coin is finished: get market cap of this coin (don't await)
+            let marketcap = this.getMarketCap(coin).catch(error => console.log(error)).then((data) => 
             {
-                console.log(v);
-                // TODO: take the values in the wallet, apply them to the market cap and print out a shiny diagram
+                this.drawChart(coin, data.Data);
             });
         }
         // all finished
         console.log(this.wallet);
+    }
+
+    drawChart(coin, data)
+    {
+        if( this.wallet[coin].chart === undefined )
+        {
+            this.wallet[coin].chart = [];
+        }
+        for(let data__value of data)
+        {
+            this.wallet[coin].chart.push({
+                t: new Date(data__value.time * 1000),
+                y: this.calcFinalValue(coin, data__value.close)
+            });
+        }
+    }
+
+    calcFinalValue(coin, value)
+    {
+        let result = 0;
+        for(const [balance__key, balance__value] of Object.entries(this.wallet[coin].balances)) {
+            result += balance__value;
+        }
+        // scale
+        if( coin === 'btc' || coin === 'ltc' || coin === 'dash' )
+        {
+            // 100000000 satoshi => 1 bitcoin
+            result *= 0.00000001;
+        }
+        if( coin === 'eth' )
+        {
+            // 1000000000000000000 wei => 1 ether
+            result *= 0.000000000000000001;
+        }
+        result *= value;
+        result = (Math.round(result*100)/100);
+        return result;
     }
 
     setBalance(coin, address, value)
@@ -78,7 +120,7 @@ export default class Cryptostats
     {
         return Helpers.getWithPromise(
             'https://api.blockcypher.com/v1/'+coin+'/main/addrs/'+address+'/balance',
-            1000
+            500
         );
     }
 
@@ -86,7 +128,7 @@ export default class Cryptostats
     {
         return Helpers.getWithPromise(
             'https://min-api.cryptocompare.com/data/histoday?fsym='+coin.toUpperCase()+'&tsym=EUR&limit='+days,
-            1000
+            500
         );
     }
     
