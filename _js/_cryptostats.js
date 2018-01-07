@@ -13,7 +13,8 @@ export default class Cryptostats
                 'addresses': [
                     '1rahL1FtAfausqm54HRPGkRPq6sGs8EJ8',
                     '15QYFNJDd9yiPJc2GummCWNfqHmMERQNLP',
-                    '1F7jtuVjirsS8DxVjxxQ2p3FfLGAFyEgx4'
+                    '1F7jtuVjirsS8DxVjxxQ2p3FfLGAFyEgx4',
+                    '16MakCZzW615uUC1TtErE9oms3Z7LMdc7d'
                 ],
                 'color': '#EB6534'
             },
@@ -37,9 +38,16 @@ export default class Cryptostats
                     'XrYJyZMFkJu1EHNgY5f5tTgwWZ3HKkYb5r'
                 ],
                 'color': '#40476D'
+            },
+            'doge': {
+                'addresses': [
+                    'DEdSM4WbuQ8FsxNHDDfEiN7oGN1MgPj7kX'
+                ],
+                'color': '#BA9F33'
             }
         };
     }
+
 
     init()
     {
@@ -87,6 +95,7 @@ export default class Cryptostats
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     animation: {
                         duration: 2000,
                         easing: 'easeOutCirc'
@@ -165,12 +174,14 @@ export default class Cryptostats
             {
                 let balance;
                 let api = await this.getBalance(coin, address).then((data) => {
-                    balance = api.final_balance;
+                    balance = data.final_balance;
                 }).catch((error) => {
                     balance = ~~(Math.random()*(10000000-1000000+1))+1000000;
                     if( coin === 'btc' ) { balance *= 0.05; }
                     if( coin === 'eth' ) { balance *= 10000000000; }
+                    console.log('RANDOM');
                 });
+                console.log(balance);
                 this.setBalance(coin, address, balance);          
             }
 
