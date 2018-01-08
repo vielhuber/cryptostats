@@ -13,32 +13,32 @@ export default class Cryptostats
                 'addresses': [
                     '1Mbp8TVc2pEPA22FXQxNJp6KQCiyJZXe87'
                 ],
-                'color': '#EB6534'
+                'color': '#556270'
             },
             'eth': {
                 'addresses': [
                    '0xedaa09e2998e642da30e98b7693953b655ff5b9e'
                 ],
-                'color': '#ACBEA3'
+                'color': '#4ECDC4'
             },
             'ltc': {
                 'addresses': [
                     'LSM2FbpWFYrQ3P6RDyLFBjz7s4mMT3GPfU',
                     'LcUwEFkGNiWNJfkqpygUEN8VL4zVVeEQwP'
                 ],
-                'color': '#AD5D4E'
+                'color': '#C7F464'
             },
             'dash': {
                 'addresses': [
                     'XbYCKYwXnVFxFUL6duqPPWw26aAoj5vs78'
                 ],
-                'color': '#40476D'
+                'color': '#FF6B6B'
             },
             'doge': {
                 'addresses': [
                     'DEdSM4WbuQ8FsxNHDDfEiN7oGN1MgPj7kX'
                 ],
-                'color': '#BA9F33'
+                'color': '#C44D58'
             }
         };
     }
@@ -48,13 +48,13 @@ export default class Cryptostats
         this.initializeChart();
         this.load().then((result) =>
         {
-            console.log('async method done');
+            console.log('done');
         });
     }
 
     initializeChart()
     {
-        Chart.defaults.global.defaultFontFamily = '"Lucida Sans Unicode", "Lucida Grande", sans-serif';
+        Chart.defaults.global.defaultFontFamily = "'Ubuntu', sans-serif";
         this.chart = new Chart(
             document.querySelector('.chart'),
             {
