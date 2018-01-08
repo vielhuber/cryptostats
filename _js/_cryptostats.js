@@ -11,10 +11,7 @@ export default class Cryptostats
         this.wallet = {
             'btc': {
                 'addresses': [
-                    '1rahL1FtAfausqm54HRPGkRPq6sGs8EJ8',
-                    '15QYFNJDd9yiPJc2GummCWNfqHmMERQNLP',
-                    '1F7jtuVjirsS8DxVjxxQ2p3FfLGAFyEgx4',
-                    '16MakCZzW615uUC1TtErE9oms3Z7LMdc7d'
+                    '1Mbp8TVc2pEPA22FXQxNJp6KQCiyJZXe87'
                 ],
                 'color': '#EB6534'
             },
@@ -27,15 +24,13 @@ export default class Cryptostats
             'ltc': {
                 'addresses': [
                     'LSM2FbpWFYrQ3P6RDyLFBjz7s4mMT3GPfU',
-                    'LcUwEFkGNiWNJfkqpygUEN8VL4zVVeEQwP',
-                    'LQGj4sbh372GfMZ1SK47tzsQW3354oK4cr'
+                    'LcUwEFkGNiWNJfkqpygUEN8VL4zVVeEQwP'
                 ],
                 'color': '#AD5D4E'
             },
             'dash': {
                 'addresses': [
-                    'XbYCKYwXnVFxFUL6duqPPWw26aAoj5vs78',
-                    'XrYJyZMFkJu1EHNgY5f5tTgwWZ3HKkYb5r'
+                    'XbYCKYwXnVFxFUL6duqPPWw26aAoj5vs78'
                 ],
                 'color': '#40476D'
             },
@@ -48,7 +43,6 @@ export default class Cryptostats
         };
     }
 
-
     init()
     {
         this.initializeChart();
@@ -60,6 +54,7 @@ export default class Cryptostats
 
     initializeChart()
     {
+        Chart.defaults.global.defaultFontFamily = '"Lucida Sans Unicode", "Lucida Grande", sans-serif';
         this.chart = new Chart(
             document.querySelector('.chart'),
             {
@@ -181,7 +176,6 @@ export default class Cryptostats
                     if( coin === 'eth' ) { balance *= 10000000000; }
                     console.log('RANDOM');
                 });
-                console.log(balance);
                 this.setBalance(coin, address, balance);          
             }
 
@@ -260,7 +254,7 @@ export default class Cryptostats
             result += balance__value;
         }
         // scale
-        if( coin === 'btc' || coin === 'ltc' || coin === 'dash' )
+        if( coin === 'btc' || coin === 'ltc' || coin === 'dash' || coin === 'doge' )
         {
             // 100000000 satoshi => 1 bitcoin
             result *= 0.00000001;
