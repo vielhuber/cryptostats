@@ -10,34 +10,18 @@ export default class Cryptostats
         this.chart = null;
         this.wallet = {
             'btc': {
-                'addresses': [
-                    '1Mbp8TVc2pEPA22FXQxNJp6KQCiyJZXe87'
-                ],
                 'color': '#556270'
             },
             'eth': {
-                'addresses': [
-                   '0xedaa09e2998e642da30e98b7693953b655ff5b9e'
-                ],
                 'color': '#4ECDC4'
             },
             'ltc': {
-                'addresses': [
-                    'LSM2FbpWFYrQ3P6RDyLFBjz7s4mMT3GPfU',
-                    'LcUwEFkGNiWNJfkqpygUEN8VL4zVVeEQwP'
-                ],
                 'color': '#C7F464'
             },
             'dash': {
-                'addresses': [
-                    'XbYCKYwXnVFxFUL6duqPPWw26aAoj5vs78'
-                ],
                 'color': '#FF6B6B'
             },
             'doge': {
-                'addresses': [
-                    'DEdSM4WbuQ8FsxNHDDfEiN7oGN1MgPj7kX'
-                ],
                 'color': '#C44D58'
             }
         };
@@ -54,6 +38,26 @@ export default class Cryptostats
 
     initializeChart()
     {
+
+        /* add shadow */
+        /*
+        let draw = Chart.controllers.line.prototype.draw;
+        Chart.controllers.line.prototype.draw = function() {
+            draw.apply(this, arguments);
+            let ctx = this.chart.chart.ctx;
+            let _stroke = ctx.stroke;
+            ctx.stroke = function() {
+                ctx.save();
+                ctx.shadowColor = '#000000';
+                ctx.shadowBlur = 5;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 4;
+                _stroke.apply(this, arguments);
+                ctx.restore();
+            }
+        };
+        */
+
         Chart.defaults.global.defaultFontFamily = "'Ubuntu', sans-serif";
         this.chart = new Chart(
             document.querySelector('.chart'),
@@ -154,6 +158,16 @@ export default class Cryptostats
                         fontStyle: 'bold'
                       }
                     },
+                    tooltips: {
+                        callbacks: {
+                            label: (tooltipItem, data) => {
+                                return ' '+tooltipItem.yLabel.toFixed(2).replace('.',',')+' €';
+                            },
+                            title: (tooltipItem, data) => {
+
+                            }
+                        }
+                    }
                 }
             }
         );
@@ -161,6 +175,9 @@ export default class Cryptostats
 
     async load()
     {        
+        // read addresses from config
+        await this.readConfigToWallet();
+
         // loop through all coins
         for(const [coin, data] of Object.entries(this.wallet))
         {
@@ -195,6 +212,24 @@ export default class Cryptostats
                 }
             });
         }
+    }
+
+    readConfigToWallet()
+    {
+        return new Promise((resolve,reject) => {
+            Helpers.get(
+                'wallet.json',
+                (data) => {
+                    for(const [data__key, data__value] of Object.entries(data)) {
+                        this.wallet[data__key].addresses = data__value;
+                    }
+                    resolve();
+                },
+                (error) => {
+                    reject();
+                }
+            );
+        });
     }
 
     sumUpData()
