@@ -2,7 +2,7 @@
 
 A little dashboard for crypto kitties.
 
-![](http://i.imgur.com/OUkLi.gif)
+![](https://github.com/vielhuber/cryptostats/raw/master/_img/intro.gif)
 
 ## supports
 
