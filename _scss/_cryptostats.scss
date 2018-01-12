@@ -6,20 +6,20 @@
     width:100%;
     height:100%;
 }
-.chart-container
+.chart
 {
     position:absolute;
     top:10%;
     left:10%;
-    width:80%;
-    height:80%;
+    width:50%;
+    height:50%;
 }
-.chart
+.chart__inner
 {
     transition: all 1s ease-in-out;
     transform: scale(1);
 }
-.chart.chart--hidden
+.chart__inner.chart__inner--hidden
 {
     transform: scale(0);
 }

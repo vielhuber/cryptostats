@@ -1,97 +1,25 @@
-import Helpers from './_helpers';
 import https from 'https';
+import Helpers from './_helpers';
 import Chart from 'chart.js';
 
 export default class Cryptostats
 {
 
-    constructor()
-    {
-        this.chart = null;
-        this.wallet = {
-            'btc': {
-                'color': '#556270'
-            },
-            'eth': {
-                'color': '#4ECDC4'
-            },
-            'ltc': {
-                'color': '#C7F464'
-            },
-            'dash': {
-                'color': '#FF6B6B'
-            },
-            'doge': {
-                'color': '#C44D58'
-            }
-        };
-    }
-
     init()
     {
-        this.initializeChart();
-        this.load().then((result) =>
-        {
-            console.log('done');
-        });
+        this.initChart();
+        this.loadData();
     }
 
-    initializeChart()
+    initChart()
     {
-
-        /* add shadow */
-        /*
-        let draw = Chart.controllers.line.prototype.draw;
-        Chart.controllers.line.prototype.draw = function() {
-            draw.apply(this, arguments);
-            let ctx = this.chart.chart.ctx;
-            let _stroke = ctx.stroke;
-            ctx.stroke = function() {
-                ctx.save();
-                ctx.shadowColor = '#000000';
-                ctx.shadowBlur = 5;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 4;
-                _stroke.apply(this, arguments);
-                ctx.restore();
-            }
-        };
-        */
 
         Chart.defaults.global.defaultFontFamily = "'Ubuntu', sans-serif";
         this.chart = new Chart(
-            document.querySelector('.chart'),
+            document.querySelector('.chart__inner'),
             {
-                type: 'line',
-                /*
-                data: {
-                    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                */
-                data: {
-
-                },
+                type: 'line',                
+                data: null,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -126,13 +54,6 @@ export default class Cryptostats
                             }
                         }],
                         yAxes: [{
-                            /*
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Wert in €',
-                                fontColor: 'white'
-                            },
-                            */
                             ticks: {
                                 beginAtZero: true,
                                 fontColor: 'white',
@@ -163,9 +84,7 @@ export default class Cryptostats
                             label: (tooltipItem, data) => {
                                 return ' '+tooltipItem.yLabel.toFixed(2).replace('.',',')+' €';
                             },
-                            title: (tooltipItem, data) => {
-
-                            }
+                            title: (tooltipItem, data) => { }
                         }
                     }
                 }
@@ -173,10 +92,10 @@ export default class Cryptostats
         );
     }
 
-    async load()
+    async loadData()
     {        
         // read addresses from config
-        await this.readConfigToWallet();
+        await this.setupWallet();
 
         // loop through all coins
         for(const [coin, data] of Object.entries(this.wallet))
@@ -191,7 +110,6 @@ export default class Cryptostats
                     balance = ~~(Math.random()*(10000000-1000000+1))+1000000;
                     if( coin === 'btc' ) { balance *= 0.05; }
                     if( coin === 'eth' ) { balance *= 10000000000; }
-                    console.log('RANDOM');
                 });
                 this.setBalance(coin, address, balance);          
             }
@@ -208,20 +126,22 @@ export default class Cryptostats
                     {
                         this.sumUpData();
                     },2000);
-                    console.log(this.wallet);
                 }
             });
         }
     }
 
-    readConfigToWallet()
+    setupWallet()
     {
         return new Promise((resolve,reject) => {
             Helpers.get(
                 'wallet.json',
                 (data) => {
+                    this.wallet = {};
                     for(const [data__key, data__value] of Object.entries(data)) {
-                        this.wallet[data__key].addresses = data__value;
+                        this.wallet[data__key] = {
+                            'addresses': data__value
+                        }
                     }
                     resolve();
                 },
@@ -232,12 +152,31 @@ export default class Cryptostats
         });
     }
 
+    getCoinColor(coin)
+    {
+        switch(coin)
+        {
+            case 'btc':
+                return '#556270';
+            case 'eth':
+                return '#4ECDC4';
+            case 'ltc':
+                return '#C7F464';
+            case 'dash':
+                return '#FF6B6B';
+            case 'doge':
+                return '#C44D58';
+            default: 
+                return '#FFFFFF';
+        }
+    }
+
     sumUpData()
     {
         let dataset = {
             label: '*',
-            backgroundColor: '#ffffff10',
-            borderColor: '#ffffff',
+            backgroundColor: this.getCoinColor('*')+'10',
+            borderColor: this.getCoinColor('*'),
             fill: true,
             data: []
         }
@@ -262,8 +201,8 @@ export default class Cryptostats
     {
         let dataset = {
             label: coin.toUpperCase(),
-            backgroundColor: this.wallet[coin].color+'10', // hexa color
-            borderColor: this.wallet[coin].color,
+            backgroundColor: this.getCoinColor(coin)+'10', // hexa color
+            borderColor: this.getCoinColor(coin),
             fill: true,
             data: []
         }
@@ -276,7 +215,7 @@ export default class Cryptostats
         }
         if( this.chart.data.datasets.length === 0 )
         {
-            document.querySelector('.chart').classList.remove('chart--hidden');
+            document.querySelector('.chart__inner').classList.remove('chart__inner--hidden');
         }
         this.chart.data.datasets.push(dataset);
         this.chart.update();
