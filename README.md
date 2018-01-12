@@ -1,4 +1,4 @@
-# 📦 cryptostats 📦
+# 🍭 cryptostats 🍭
 
 A little dashboard for crypto kitties.
 
