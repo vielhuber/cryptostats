@@ -94,31 +94,26 @@ export default class Cryptostats
 
     async loadData()
     {        
-        // read addresses from config
         await this.setupWallet();
 
-        // loop through all coins
         for(const [coin, data] of Object.entries(this.wallet))
         {
-            // loop through all addresses
             for(let address of data.addresses)
             {
                 let balance;
                 let api = await this.getBalance(coin, address).then((data) => {
                     balance = data.final_balance;
                 }).catch((error) => {
-                    balance = ~~(Math.random()*(10000000-1000000+1))+1000000;
-                    if( coin === 'btc' ) { balance *= 0.05; }
-                    if( coin === 'eth' ) { balance *= 10000000000; }
+                    balance = this.getRandomValue(coin);
                 });
                 this.setBalance(coin, address, balance);          
             }
 
-            // balances of coin is finished: get market cap of this coin (don't await)
-            let marketcap = this.getMarketCap(coin).catch(error => console.log(error)).then((data) => 
+            // don't await
+            let marketcap = this.getMarketCap(coin).catch(error => { }).then((data) => 
             {
                 this.addToChart(coin, data.Data);
-                // if this was last
+                // if this was last entry
                 if( this.chart.data.datasets.length === Object.keys(this.wallet).length )
                 {
                     // throttle
@@ -129,6 +124,14 @@ export default class Cryptostats
                 }
             });
         }
+    }
+
+    getRandomValue(coin)
+    {
+        let value = ~~(Math.random()*(10000000-1000000+1))+1000000;
+        if( coin === 'btc' ) { value *= 0.05; }
+        if( coin === 'eth' ) { value *= 10000000000; }
+        return value;
     }
 
     setupWallet()
