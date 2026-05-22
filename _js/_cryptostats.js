@@ -1,6 +1,8 @@
-import https from 'https';
 import Helpers from './_helpers';
-import Chart from 'chart.js';
+import { Chart, registerables } from 'chart.js';
+import 'chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle';
+
+Chart.register(...registerables);
 
 export default class Cryptostats
 {
@@ -14,12 +16,14 @@ export default class Cryptostats
     initChart()
     {
 
-        Chart.defaults.global.defaultFontFamily = "'Ubuntu', sans-serif";
+        Chart.defaults.font.family = "'Ubuntu', sans-serif";
         this.chart = new Chart(
             document.querySelector('.chart__inner'),
             {
                 type: 'line',                
-                data: null,
+                data: {
+                    datasets: []
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -28,63 +32,55 @@ export default class Cryptostats
                         easing: 'easeOutCirc'
                     },
                     scales: {
-                        xAxes: [{
+                        x: {
                             type: 'time',
                             time: {
                                 unit: 'day',
-                                unitStepSize: 1,
                                 displayFormats: {
-                                    'day': 'DD.MM.'
+                                    day: 'dd.MM.'
                                 }
                             },
-                            distribution: 'linear',
                             ticks: {
-                                fontColor: 'white',
-                                showLabelBackdrop: false,
-                                fontStyle: 'bold'
+                                color: 'white',
+                                font: {
+                                    weight: 'bold'
+                                }
                             },
-                            pointLabels: {
-                                fontColor: 'white'
-                            },
-                            gridLines: {
+                            grid: {
                                 color: 'rgba(255, 255, 255, 0.2)'
-                            },
-                            angleLines: {
-                                color: 'white'
                             }
-                        }],
-                        yAxes: [{
+                        },
+                        y: {
                             ticks: {
                                 beginAtZero: true,
-                                fontColor: 'white',
-                                showLabelBackdrop: false,
-                                fontStyle: 'bold',
+                                color: 'white',
+                                font: {
+                                    weight: 'bold'
+                                },
                                 callback: (value, index, values) => { return value+' €'; }
                             },
-                            pointLabels: {
-                                fontColor: 'white'
-                            },
-                            gridLines: {
+                            grid: {
                                 color: 'rgba(255, 255, 255, 0.2)'
-                            },
-                            angleLines: {
-                                color: 'white'
                             }
-                        }]
+                        }
                     },
-                    legend: {
-                      position: 'top',
-                      labels: {
-                        fontColor: 'white',
-                        fontStyle: 'bold'
-                      }
-                    },
-                    tooltips: {
-                        callbacks: {
-                            label: (tooltipItem, data) => {
-                                return ' '+tooltipItem.yLabel.toFixed(2).replace('.',',')+' €';
-                            },
-                            title: (tooltipItem, data) => { }
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: 'white',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    return ' '+context.parsed.y.toFixed(2).replace('.',',')+' €';
+                                },
+                                title: () => { return ''; }
+                            }
                         }
                     }
                 }
@@ -192,7 +188,7 @@ export default class Cryptostats
             }
             sum = (Math.round(sum*100)/100);
             dataset.data.push({
-                t: data__value.t,
+                x: data__value.x,
                 y: sum
             });
         });
@@ -212,7 +208,7 @@ export default class Cryptostats
         for(let data__value of data)
         {
             dataset.data.push({
-                t: new Date(data__value.time * 1000),
+                x: new Date(data__value.time * 1000),
                 y: this.calcFinalValue(coin, data__value.close)
             });
         }

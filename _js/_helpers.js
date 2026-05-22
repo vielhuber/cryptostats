@@ -6,35 +6,19 @@ export default class Helpers
     static isMobile()
     {
         // viewport width based and using isMobile library
-        if( window.innerWidth < 750 || isMobile.phone ) { return true; }
+        if( window.innerWidth < 750 || isMobile(window.navigator).phone ) { return true; }
         return false;
     }
 
     static isTablet()
     {
-        return isMobile.tablet;   
+        return isMobile(window.navigator).tablet;
     }
 
     static isTouch()
     {
         return 'ontouchstart' in window || navigator.maxTouchPoints;
     } 
-
-    static isMobile()
-    {
-        return isMobile.phone;
-    }
-
-    static isTablet()
-    {
-        return isMobile.tablet;   
-    }
-
-    static isTouch()
-    {
-        return 'ontouchstart' in window || navigator.maxTouchPoints;
-    }
-
     static fadeOut(el)
     {
         el.style.opacity = 1;
