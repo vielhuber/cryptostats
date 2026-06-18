@@ -1,6 +1,6 @@
 import Helpers from './_helpers';
 import { Chart, registerables } from 'chart.js';
-import 'chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle';
+import 'chartjs-adapter-date-fns';
 
 Chart.register(...registerables);
 
@@ -106,7 +106,7 @@ export default class Cryptostats
             }
 
             // don't await
-            let marketcap = this.getMarketCap(coin).catch(error => { }).then((data) => 
+            let marketcap = this.getMarketCap(coin).then((data) => 
             {
                 this.addToChart(coin, data.Data);
                 // if this was last entry
@@ -118,7 +118,7 @@ export default class Cryptostats
                         this.sumUpData();
                     },2000);
                 }
-            });
+            }).catch(error => { });
         }
     }
 
