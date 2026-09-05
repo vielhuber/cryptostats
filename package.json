@@ -1,6 +1,6 @@
 {
   "name": "cryptostats",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "_build/bundle.js",
   "devDependencies": {
@@ -46,6 +46,6 @@
   "author": "",
   "license": "ISC",
   "allowScripts": {
-    "@parcel/watcher@2.6.0": true
+    "@parcel/watcher": true
   }
 }
