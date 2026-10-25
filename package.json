@@ -1,22 +1,22 @@
 {
   "name": "cryptostats",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "_build/bundle.js",
   "devDependencies": {
-    "autoprefixer": "^10.5.5",
+    "autoprefixer": "^10.6.1",
     "browser-sync": "^3.0.4",
-    "chart.js": "^4.5.1",
+    "chart.js": "^4.6.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^4.4.0",
     "html-minifier-terser": "^7.2.0",
     "ismobilejs": "^1.1.1",
-    "npm-run-all2": "^9.0.3",
+    "npm-run-all2": "^9.0.4",
     "onchange": "^7.1.0",
     "postcss-cli": "^12.0.0",
-    "sass": "^1.104.0",
+    "sass": "^1.106.1",
     "terser": "^5.51.2",
-    "vite": "^8.2.2"
+    "vite": "^8.3.5"
   },
   "scripts": {
     "html": "html-minifier-terser --collapse-whitespace --remove-comments --input-dir ./_html --output-dir ./ --file-ext html",
